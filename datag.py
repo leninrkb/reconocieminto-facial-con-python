@@ -20,11 +20,35 @@ NUM_TO_GENERATE = 10
 WRITE = False
 
 # aumentar la complejidad de la arquitectura para obtener mas modificaciones
+# TRANSFORM = A.Compose([
+#     A.HorizontalFlip(p=0.5),
+#     A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
+#     A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=45, p=0.5),
+# ])
+
 TRANSFORM = A.Compose([
-    A.HorizontalFlip(p=0.5),
-    A.RandomBrightnessContrast(brightness_limit=0.09, contrast_limit=0.09, p=0.5),
-    A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=15)
-])
+        # A.RandomRotate90(),
+        A.HorizontalFlip(),
+        # A.Transpose(),
+        A.OneOf([
+            A.GaussNoise(),
+        ], p=0.2),
+        A.OneOf([
+            A.MotionBlur(p=.2),
+            A.MedianBlur(blur_limit=3, p=0.1),
+            A.Blur(blur_limit=3, p=0.1),
+        ], p=0.2),
+        A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.11, rotate_limit=20, p=0.4),
+        A.OneOf([
+            A.OpticalDistortion(p=0.3),
+            A.GridDistortion(p=.1),
+        ], p=0.2),
+        A.OneOf([
+            A.CLAHE(clip_limit=2),
+            A.RandomBrightnessContrast(),            
+        ], p=0.3),
+        A.HueSaturationValue(p=0.3),
+    ])
 
 
 def guardar_img(img_array, path_out, num=0):
